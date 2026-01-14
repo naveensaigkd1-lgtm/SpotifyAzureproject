@@ -9,10 +9,10 @@
 			"container": {
 				"type": "string"
 			},
-			"file": {
+			"folder": {
 				"type": "string"
 			},
-			"folder": {
+			"file": {
 				"type": "string"
 			}
 		},
