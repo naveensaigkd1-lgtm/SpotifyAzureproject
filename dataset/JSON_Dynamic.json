@@ -2,7 +2,7 @@
 	"name": "JSON_Dynamic",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "AzureDataLakeStorage4",
+			"referenceName": "AzureDataLakeStorage5",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
