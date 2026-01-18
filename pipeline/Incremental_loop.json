@@ -8,6 +8,11 @@
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.loop_Input",
+						"type": "Expression"
+					},
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "AzureSQLtoLake",
@@ -38,7 +43,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "SELECT * FROM @{item().schema}.@{item().table} WHERE @{item().cdc} > '@{if(empty(item().fromdate),activity('last_cdc').output.firstRow.cdc,item().fromdate)}'",
+										"value": "SELECT * from @{item().schema}.@{item().table} WHERE @{item().cdc} > '@{if(empty(item().fromdate), activity('last_cdc').output.firstRow.cdc, item().fromdate)}'",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
@@ -117,7 +122,7 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@{item().table}_cdc",
+											"value": "@concat(item().table, '_cdc')\n",
 											"type": "Expression"
 										},
 										"file": "cdc.json"
@@ -299,7 +304,7 @@
 												{
 													"type": "Query",
 													"text": {
-														"value": "SELECT MAX(@{pipeline().parameters.cdc}) AS cdc FROM @{pipeline().parameters.schema}.@{pipeline().parameters.table}",
+														"value": "SELECT MAX(@{item().cdc}) AS cdc FROM @{item().schema}.@{item().table}",
 														"type": "Expression"
 													}
 												}
@@ -315,38 +320,38 @@
 			}
 		],
 		"parameters": {
-			"loop": {
-				"type": "string",
+			"loop_Input": {
+				"type": "array",
 				"defaultValue": [
 					{
 						"schema": "dbo",
 						"table": "DimUser",
-						"cdc_col": "updated_at",
-						"from_date": ""
+						"cdc": "updated_at",
+						"fromdate": ""
 					},
 					{
 						"schema": "dbo",
 						"table": "DimTrack",
-						"cdc_col": "updated_at",
-						"from_date": ""
+						"cdc": "updated_at",
+						"fromdate": ""
 					},
 					{
 						"schema": "dbo",
 						"table": "DimDate",
-						"cdc_col": "date",
-						"from_date": ""
+						"cdc": "date",
+						"fromdate": ""
 					},
 					{
 						"schema": "dbo",
 						"table": "DimArtist",
-						"cdc_col": "updated_at",
-						"from_date": ""
+						"cdc": "updated_at",
+						"fromdate": ""
 					},
 					{
 						"schema": "dbo",
 						"table": "FactStream",
-						"cdc_col": "stream_timestamp",
-						"from_date": ""
+						"cdc": "stream_timestamp",
+						"fromdate": ""
 					}
 				]
 			}
