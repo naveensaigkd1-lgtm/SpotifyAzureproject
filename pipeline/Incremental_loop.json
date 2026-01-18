@@ -43,7 +43,7 @@
 								"source": {
 									"type": "AzureSqlSource",
 									"sqlReaderQuery": {
-										"value": "SELECT  * FROM @{pipeline().parameters.schema}.@{pipeline().parameters.table} WHERE @{pipeline().parameters.cdc} > '@{if(empty(pipeline().parameters.fromdate),activity('last_cdc').output.firstRow.cdc, pipeline().parameters.fromdate)}'",
+										"value": "SELECT  * FROM @{item().schema}.@{item().table} WHERE @{item().cdc} > '@{if(empty(item().fromdate),activity('last_cdc').output.firstRow.cdc, item().fromdate)}'",
 										"type": "Expression"
 									},
 									"queryTimeout": "02:00:00",
@@ -122,7 +122,7 @@
 									"parameters": {
 										"container": "bronze",
 										"folder": {
-											"value": "@item().table_cdc",
+											"value": "@concat(item().table,'_','cdc')",
 											"type": "Expression"
 										},
 										"file": "cdc.json"
@@ -229,7 +229,7 @@
 													{
 														"name": "cdc",
 														"value": {
-															"value": "@activity('Max_cdc').output.resultSets[0].rows[0].cdc",
+															"value": "@activity('Max_cdc').output.resultSets.rows.cdc",
 															"type": "Expression"
 														}
 													}
@@ -261,7 +261,7 @@
 												"parameters": {
 													"container": "bronze",
 													"folder": {
-														"value": "@concat(item().table,'_cdc')",
+														"value": "@concat(item().table,'_', 'cdc')",
 														"type": "Expression"
 													},
 													"file": "empty.json"
@@ -275,7 +275,7 @@
 												"parameters": {
 													"container": "bronze",
 													"folder": {
-														"value": "@item().table_cdc",
+														"value": "@concat(item().table, '_', 'cdc')",
 														"type": "Expression"
 													},
 													"file": "cdc.json"
@@ -304,7 +304,7 @@
 												{
 													"type": "Query",
 													"text": {
-														"value": "SELECT MAX(@{pipeline().parameters.cdc}) AS cdc FROM @{pipeline().parameters.schema}.@{pipeline().parameters.table}",
+														"value": "SELECT MAX(@{item().cdc}) AS cdc FROM @{item().schema}.@{item().table}",
 														"type": "Expression"
 													}
 												}
